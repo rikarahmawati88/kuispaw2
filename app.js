@@ -3,20 +3,25 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var expressLayouts = require('express-ejs-layouts');//impor express-ejs-layouts
 const connectDB = require("./app_api/models/db")
 connectDB(); //connect to MongoDB
+var cors = require('cors')
 
 // route app_api
-const fakultasRouterAPI = require("./app_api/routes/fakultas")
-const prodiRouterAPI = require("./app_api/routes/prodi")
-const beritaRouterAPI = require("./app_api/routes/berita")
+const ruanganRouterAPI = require("./app_api/routes/ruangan")
+const daftarPegawaiRouterAPI = require("./app_api/routes/daftarPegawai")
+const daftarTamuRouterAPI = require("./app_api/routes/daftarTamu")
+const authRouterAPI = require("./app_api/routes/auth")
 
-// route app_server
-var indexRouter = require('./app_server/routes/index');
-var usersRouter = require('./app_server/routes/users');
+
+require('dotenv').config(); // Load environmet variables
+
+// // route app_server
+// var indexRouter = require('./app_server/routes/index');
+// var usersRouter = require('./app_server/routes/users');
 
 var app = express();
+app.use(cors())
 
 // view engine setup
 app.set('views', path.join(__dirname,'app_server','views'));
@@ -27,13 +32,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(expressLayouts);
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/api/fakultas',fakultasRouterAPI);
-app.use('/api/prodi',prodiRouterAPI);
-app.use('/api/berita',beritaRouterAPI);
+
+// app.use('/', indexRouter);
+// app.use('/users', usersRouter);
+app.use('/api/ruangan',ruanganRouterAPI);
+app.use('/api/daftarTamu',daftarTamuRouterAPI);
+app.use('/api/daftarPegawai',daftarPegawaiRouterAPI);
+app.use('/api/auth', authRouterAPI);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
